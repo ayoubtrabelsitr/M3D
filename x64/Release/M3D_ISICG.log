@@ -1,0 +1,23 @@
+﻿  gl3w.c
+  imgui_impl_opengl3.cpp
+  imgui_impl_sdl.cpp
+  imgui.cpp
+  imgui_draw.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  application.cpp
+  camera.cpp
+  triangle_mesh.cpp
+C:\Users\ayoub\Desktop\m3d_isicg-main\src\lab_works\common\models\triangle_mesh.cpp(29,64): warning C4267: 'argument' : conversion de 'size_t' en 'GLsizei', perte possible de données
+  triangle_mesh_model.cpp
+  lab_work_1.cpp
+  lab_work_manager.cpp
+  lab_work_2.cpp
+C:\Users\ayoub\Desktop\m3d_isicg-main\src\lab_works\lab_work_2\lab_work_2.cpp(129,57): warning C4244: 'argument' : conversion de 'double' en 'GLfloat', perte possible de données
+C:\Users\ayoub\Desktop\m3d_isicg-main\src\lab_works\lab_work_2\lab_work_2.cpp(140,76): warning C4267: 'argument' : conversion de 'size_t' en 'GLsizei', perte possible de données
+  lab_work_3.cpp
+C:\Users\ayoub\Desktop\m3d_isicg-main\src\lab_works\lab_work_3\lab_work_3.cpp(121,79): warning C4267: 'argument' : conversion de 'size_t' en 'GLsizei', perte possible de données
+  lab_work_4.cpp
+  main.cpp
+  image.cpp
+LINK : fatal error LNK1104: impossible d'ouvrir le fichier 'C:\Users\ayoub\Desktop\m3d_isicg-main\x64\Release\M3D_ISICG.exe'
