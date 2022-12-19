@@ -17,9 +17,9 @@ namespace M3D_ISICG
 	bool LabWork6::init()
 	{
 		const std::string vertexShaderStr
-			= readFile( _shaderFolder + "meshtexture.vert" ); // lire le shader  et le stocker dans vertexShaderStr
+			= readFile( _shaderFolder + "geometry_pass.vert" ); // lire le shader  et le stocker dans vertexShaderStr
 		const std::string fragmentShaderStr
-			= readFile( _shaderFolder + "meshtexture.frag" );	// lire le shader  et le stocker dans fragmentShaderStr
+			= readFile( _shaderFolder + "geometry_pass.frag" );	// lire le shader  et le stocker dans fragmentShaderStr
 		vertexShader	  = glCreateShader( GL_VERTEX_SHADER ); // Construction du vertex shader
 		fragmentShader	  = glCreateShader( GL_FRAGMENT_SHADER ); // Construction du fragment shader
 		const char * VSrc = vertexShaderStr.c_str();	  // variable intermédiaire pour l'utiliser dans glCreateShader
@@ -75,7 +75,7 @@ namespace M3D_ISICG
 
 		glUseProgram( Program );
 		_initCamera(); // appel de la fct pour l'initialisation du camera
-
+		
 		// bunny.load( "Bunny", "data/models/bunny2/bunny_2.obj" );
 		bunny.load( "Bunny", "data/models/sponza/sponza.obj" );
 		bunny._transformation = glm::scale( bunny._transformation, glm::vec3( 0.003f ) );
@@ -86,6 +86,7 @@ namespace M3D_ISICG
 		location_ModelMatrix  = glGetUniformLocation( Program, "ModelMatrix" );
 		locationCameraPos	  = glGetUniformLocation( Program, "Camerapos" );
 		///////////////////////////////////////////////////////////////////////////////////
+
 		glDeleteShader( vertexShader );
 		glDeleteShader( fragmentShader );
 		std::cout << "Done!" << std::endl;
@@ -119,6 +120,16 @@ namespace M3D_ISICG
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 
 		bunny.render( Program );
+	}
+	void LabWork6::PreparerGBuffuer() {
+		//--------------------------Création de FBO-----------------------------------------
+		glCreateFramebuffers( 1, &_gBufferTextures[ 0 ] );
+		glCreateFramebuffers( 2, &_gBufferTextures[ 1 ] );
+		glCreateFramebuffers( 3, &_gBufferTextures[ 2 ] );
+		glCreateFramebuffers( 4, &_gBufferTextures[ 3 ] );
+		glCreateFramebuffers( 5, &_gBufferTextures[ 4 ] );
+		glCreateFramebuffers( 6, &_gBufferTextures[ 5 ] );
+		//------------------------------------------------------------------------------------
 	}
 	void LabWork6::displayUI()
 	{

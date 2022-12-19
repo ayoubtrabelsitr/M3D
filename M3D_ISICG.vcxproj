@@ -78,8 +78,8 @@
     <None Include="src\lab_works\lab_work_4\shaders\mesh.vert" />
     <None Include="src\lab_works\lab_work_5\shaders\meshtexture.frag" />
     <None Include="src\lab_works\lab_work_5\shaders\meshtexture.vert" />
-    <None Include="src\lab_works\lab_work_6\shaders\meshtexture.frag" />
-    <None Include="src\lab_works\lab_work_6\shaders\meshtexture.vert" />
+    <None Include="src\lab_works\lab_work_6\shaders\geometry_pass.frag" />
+    <None Include="src\lab_works\lab_work_6\shaders\geometry_pass.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

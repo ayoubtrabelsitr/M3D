@@ -201,7 +201,7 @@
     </None>
     <None Include="src\lab_works\lab_work_5\shaders\meshtexture.vert" />
     <None Include="src\lab_works\lab_work_5\shaders\meshtexture.frag" />
-    <None Include="src\lab_works\lab_work_6\shaders\meshtexture.vert" />
-    <None Include="src\lab_works\lab_work_6\shaders\meshtexture.frag" />
+    <None Include="src\lab_works\lab_work_6\shaders\geometry_pass.vert" />
+    <None Include="src\lab_works\lab_work_6\shaders\geometry_pass.frag" />
   </ItemGroup>
 </Project>

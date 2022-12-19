@@ -31,7 +31,7 @@ namespace M3D_ISICG
 
 		void			  _initCamera();
 		void			  _updateViewMatrix();
-		float			  fovy				 = 60;
+		
 		float			  _cameraSpeed		 = 0.1f;
 		float			  _cameraSensitivity = 0.1f;
 		const std::string vertexShaderStr;	 // Déclaration de variable pour lire et stocker vertex shader
@@ -43,6 +43,10 @@ namespace M3D_ISICG
 		GLuint location_ViewMatrix, location_ModelMatrix, location_ProjectionMatrix;
 		GLuint location_NormalMatrix;
 		GLuint locationCameraPos;
+
+		//-----------------Les attributs pour les textures ---------------------------------------------------
+		GLuint _gBufferTextures[5]; //6 attributs 
+		void   PreparerGBuffuer();
 		// ================
 		// Mat4f modelView = glm::mat4( 1.f );
 		Mat4f MVPa;
