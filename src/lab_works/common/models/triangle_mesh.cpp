@@ -26,30 +26,40 @@ namespace M3D_ISICG
 		glProgramUniform3fv(p_glProgram,glGetUniformLocation( p_glProgram, "ambient_color" ),1,glm::value_ptr( _material._ambient ) ); // Passage du couleur ambient de la maillage au programme GLSL
 		glProgramUniform3fv(p_glProgram,glGetUniformLocation( p_glProgram, "diffuse_color" ),1,glm::value_ptr( _material._diffuse ) ); // Passage du couleur diffuse de la maillage au programme GLSL
 		glProgramUniform3fv(p_glProgram,glGetUniformLocation( p_glProgram, "speculaire_color" ),1,glm::value_ptr( _material._specular ) ); // Passage du couleur diffuse de la maillage au programme GLSL
-		
 		glProgramUniform1f(p_glProgram, glGetUniformLocation( p_glProgram, "shininess" ),_material._shininess );
 		
-			glProgramUniform1i(p_glProgram, glGetUniformLocation( p_glProgram, "uHasDiffuseMap" ), _material._hasDiffuseMap );
+		//----------------Envoyer les informations de la normal map au GPU( texture + booléen )-------------
+		//Diffuse
+		glProgramUniform1i(p_glProgram, glGetUniformLocation( p_glProgram, "uHasDiffuseMap" ), _material._hasDiffuseMap );
 		if (_material._hasDiffuseMap) 
 		{
 			glBindTextureUnit( 1, _material._diffuseMap._id ); //Lier binding=1
 		}
-
+		//Ambient
 		glProgramUniform1i(p_glProgram, glGetUniformLocation( p_glProgram, "uHasAmbientMap" ), _material._hasAmbientMap );
 		if ( _material._hasAmbientMap )
 		{
 			glBindTextureUnit( 2, _material._ambientMap._id ); // Lier binding=1
 		}
+		//Specular
 		glProgramUniform1i(p_glProgram, glGetUniformLocation( p_glProgram, "uHasSpecularMap" ), _material._hasSpecularMap );
 		if ( _material._hasSpecularMap )
 		{
 			glBindTextureUnit( 3, _material._specularMap._id ); // Lier binding=1
 		}
+		//Shiness
 		glProgramUniform1i(p_glProgram, glGetUniformLocation( p_glProgram, "uHasShininess" ), _material._hasShininessMap );
 		if ( _material._hasShininessMap )
 		{
 			glBindTextureUnit( 4, _material._shininessMap._id );
 		}  
+		//Normal
+		glProgramUniform1i(p_glProgram, glGetUniformLocation( p_glProgram, "uHasNormalMap" ), _material._hasNormalMap );
+		if ( _material._hasNormalMap )
+		{
+			glBindTextureUnit( 5, _material._normalMap._id );
+		}
+		////////////////////////////////////////////////////
 		glBindVertexArray(_vao);//Liaison entre VAO et le programme
 		glDrawElements(GL_TRIANGLES,_indices.size(),GL_UNSIGNED_INT,0); // Lancez le pipeline
 		glBindVertexArray(0);// Déliez le VAO et le programme

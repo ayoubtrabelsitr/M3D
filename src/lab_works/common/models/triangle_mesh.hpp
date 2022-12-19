@@ -31,11 +31,15 @@ namespace M3D_ISICG
 		Vec3f _specular	 = VEC3F_ZERO;
 		float _shininess = 0.f;
 
+
+		bool  _hasNormalMap	  = false;
 		bool _hasAmbientMap	  = false;
 		bool _hasDiffuseMap	  = false;
 		bool _hasSpecularMap  = false;
 		bool _hasShininessMap = false;
+		bool _Opaque		  = true; // bool pour identifier les objets opaques des autres 
 
+		Texture _normalMap;
 		Texture _ambientMap;
 		Texture _diffuseMap;
 		Texture _specularMap;

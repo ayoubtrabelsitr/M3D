@@ -38,6 +38,11 @@ namespace M3D_ISICG
 				  << _meshes.size() << " meshes, "	//
 				  << _nbTriangles << " triangles, " //
 				  << _nbVertices << " vertices" << std::endl;
+		//-----------------Triez les maillages du modéle----------------------------------------------------
+		std ::partition( _meshes.begin(),
+						 _meshes.end(),
+						 []( const TriangleMesh & p_mesh ) -> bool { return p_mesh._material._Opaque; } );
+		//--------------------------------------------------------------------------------------------------
 	}
 
 	void TriangleMeshModel::render( const GLuint p_glProgram ) const
@@ -148,6 +153,20 @@ namespace M3D_ISICG
 		aiString  texturePath;
 		Texture	  texture; // We suppose to have at most one texture per type.
 
+
+
+		//------------------------------------------------------- Normal 
+		if ( p_mtl->GetTextureCount( aiTextureType_NORMALS ) > 0 ) // Texture ?
+		{
+			p_mtl->GetTexture( aiTextureType_NORMALS, 0, &texturePath );
+			texture = _loadTexture( texturePath, "normal" );
+			if ( texture._id != GL_INVALID_INDEX )
+			{
+				material._normalMap	= texture;
+				material._hasNormalMap = true;
+			}
+		}
+
 		// ===================================================== AMBIENT
 		if ( p_mtl->GetTextureCount( aiTextureType_AMBIENT ) > 0 ) // Texture ?
 		{
@@ -216,6 +235,11 @@ namespace M3D_ISICG
 			material._shininess = shininess;
 		}
 
+		// -------------------Mettre le bool _Opaque false si Assimp détecte une opacity--------------------------
+		if ( p_mtl->GetTextureCount( aiTextureType_OPACITY ) > 0 )
+		{
+			material._Opaque = false;
+		}
 		// =====================================================
 
 		return material;

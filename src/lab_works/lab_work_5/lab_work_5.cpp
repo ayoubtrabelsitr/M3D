@@ -99,21 +99,26 @@ namespace M3D_ISICG
 	{
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		glEnable( GL_DEPTH_TEST );
+
+		//glEnable( GL_BLEND );//Activer le mélange des couleurs dans le framebuffer
+		//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );//Indiquer la fonction de mélange à utiliser
+
 		/////////////////////////////////Calculer les matrices ///////////////////////////////////////////////////////////////////////
 		MVPa = camera.getProjectionMatrix() * camera.getViewMatrix() * bunny._transformation;
 		Mat3f Normal_Matrix = Mat3f( glm::transpose( glm::inverse( camera.getViewMatrix() * bunny._transformation ) ) );
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// 
-		//////////////////////Mettre a jour les variables uniformes////////////////////////////////////////
+		
+
+		//////////////////////Mettre a jour les variables uniformes/////////////////////////////////////////
 
 		glProgramUniformMatrix4fv( Program, location_MVP, 1, GL_FALSE, glm::value_ptr( MVPa ) );
 		glProgramUniformMatrix3fv( Program, location_NormalMatrix, 1, GL_FALSE, glm::value_ptr( Normal_Matrix ) );
-		glProgramUniform3fv(Program, glGetUniformLocation( Program, "lightPos" ), 1, glm::value_ptr( Vec3f(0.f,0.f,0.f)));
+		glProgramUniform3fv(Program, glGetUniformLocation( Program, "lightPos" ), 1, glm::value_ptr( camera.Positioncamera() ) );
 		glProgramUniformMatrix4fv(Program, location_ViewMatrix, 1, GL_FALSE, glm::value_ptr( camera.getViewMatrix() ) );
 		glProgramUniformMatrix4fv(Program, location_ModelMatrix, 1, GL_FALSE, glm::value_ptr( bunny._transformation ) );
 		glProgramUniform3fv( Program, locationCameraPos, 1, glm::value_ptr( camera.Positioncamera() ) );
 		
-		//////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		bunny.render( Program );
 	}
