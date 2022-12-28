@@ -203,5 +203,6 @@
     <None Include="src\lab_works\lab_work_5\shaders\meshtexture.frag" />
     <None Include="src\lab_works\lab_work_6\shaders\geometry_pass.vert" />
     <None Include="src\lab_works\lab_work_6\shaders\geometry_pass.frag" />
+    <None Include="src\lab_works\lab_work_6\shaders\shading_pass.frag" />
   </ItemGroup>
 </Project>

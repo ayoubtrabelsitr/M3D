@@ -10,16 +10,36 @@ namespace M3D_ISICG
 
 	LabWork6::~LabWork6()
 	{
-		glDeleteProgram( Program ); // Destruction du programme
+		glDeleteProgram( _geometryPassProgram ); // Destruction du programme
 		bunny.cleanGL();
 	}
 
 	bool LabWork6::init()
 	{
+		initialiser_geometryPassProgram();
+		_initCamera(); // appel de la fct pour l'initialisation du camera
+		
+		// bunny.load( "Bunny", "data/models/bunny2/bunny_2.obj" );
+		bunny.load( "Bunny", "data/models/sponza/sponza.obj" );
+		bunny._transformation = glm::scale( bunny._transformation, glm::vec3( 0.003f ) );
+		////////////////////////////////////variables uniformes //////////////////////////
+		location_MVP		  = glGetUniformLocation( _geometryPassProgram, "MVPMatrix" );
+		location_NormalMatrix = glGetUniformLocation( _geometryPassProgram, "NormalMatrix" );
+		location_ViewMatrix	  = glGetUniformLocation( _geometryPassProgram, "ViewMatrix" );
+		location_ModelMatrix  = glGetUniformLocation( _geometryPassProgram, "ModelMatrix" );
+		locationCameraPos	  = glGetUniformLocation( _geometryPassProgram, "Camerapos" );
+		///////////////////////////////////////////////////////////////////////////////////
+
+		glDeleteShader( vertexShader );
+		glDeleteShader( fragmentShader );
+		std::cout << "Done!" << std::endl;
+		return true;
+	}
+	void LabWork6::initialiser_geometryPassProgram() {
 		const std::string vertexShaderStr
 			= readFile( _shaderFolder + "geometry_pass.vert" ); // lire le shader  et le stocker dans vertexShaderStr
 		const std::string fragmentShaderStr
-			= readFile( _shaderFolder + "geometry_pass.frag" );	// lire le shader  et le stocker dans fragmentShaderStr
+			= readFile( _shaderFolder + "geometry_pass.frag" ); // lire le shader  et le stocker dans fragmentShaderStr
 		vertexShader	  = glCreateShader( GL_VERTEX_SHADER ); // Construction du vertex shader
 		fragmentShader	  = glCreateShader( GL_FRAGMENT_SHADER ); // Construction du fragment shader
 		const char * VSrc = vertexShaderStr.c_str();	  // variable intermédiaire pour l'utiliser dans glCreateShader
@@ -41,7 +61,7 @@ namespace M3D_ISICG
 			glDeleteShader( vertexShader );
 			glDeleteShader( fragmentShader );
 			std ::cerr << " Error compiling vertex shader : " << log << std ::endl;
-			return false;
+			return ;
 		}
 		// Check if compilation is ok
 		// fragment.----------------------------------------------------------------------------
@@ -53,52 +73,38 @@ namespace M3D_ISICG
 			glDeleteShader( vertexShader );
 			glDeleteShader( fragmentShader );
 			std ::cerr << " Error compiling vertex shader : " << log << std ::endl;
-			return false;
+			return ;
 		}
 
-		Program = glCreateProgram(); // Création du programme
+		_geometryPassProgram = glCreateProgram(); // Création du programme
 		// Attachage shaders/programme
-		glAttachShader( Program, vertexShader );
-		glAttachShader( Program, fragmentShader );
+		glAttachShader( _geometryPassProgram, vertexShader );
+		glAttachShader( _geometryPassProgram, fragmentShader );
 		// Liaison du programme
-		glLinkProgram( Program );
+		glLinkProgram( _geometryPassProgram );
 
 		GLint linked;
-		glGetProgramiv( Program, GL_LINK_STATUS, &linked );
+		glGetProgramiv( _geometryPassProgram, GL_LINK_STATUS, &linked );
 		if ( !linked )
 		{
 			GLchar log[ 1024 ];
-			glGetProgramInfoLog( Program, sizeof( log ), NULL, log );
+			glGetProgramInfoLog( _geometryPassProgram, sizeof( log ), NULL, log );
 			std ::cerr << " Error linking program : " << log << std ::endl;
-			return false;
+			return;
 		}
 
-		glUseProgram( Program );
-		_initCamera(); // appel de la fct pour l'initialisation du camera
-		
-		// bunny.load( "Bunny", "data/models/bunny2/bunny_2.obj" );
-		bunny.load( "Bunny", "data/models/sponza/sponza.obj" );
-		bunny._transformation = glm::scale( bunny._transformation, glm::vec3( 0.003f ) );
-		////////////////////////////////////variables uniformes //////////////////////////
-		location_MVP		  = glGetUniformLocation( Program, "MVPMatrix" );
-		location_NormalMatrix = glGetUniformLocation( Program, "NormalMatrix" );
-		location_ViewMatrix	  = glGetUniformLocation( Program, "ViewMatrix" );
-		location_ModelMatrix  = glGetUniformLocation( Program, "ModelMatrix" );
-		locationCameraPos	  = glGetUniformLocation( Program, "Camerapos" );
-		///////////////////////////////////////////////////////////////////////////////////
-
-		glDeleteShader( vertexShader );
-		glDeleteShader( fragmentShader );
-		std::cout << "Done!" << std::endl;
-		return true;
+		glUseProgram( _geometryPassProgram );
 	}
-
 	void LabWork6::animate( const float p_deltaTime ) {}
 
 	void LabWork6::render()
 	{
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		glEnable( GL_DEPTH_TEST );
+		_geometryPass();
+		
+	}
+	void LabWork6::_geometryPass() {
 		/////////////////////////////////Calculer les matrices
 		//////////////////////////////////////////////////////////////////////////
 		MVPa				= camera.getProjectionMatrix() * camera.getViewMatrix() * bunny._transformation;
@@ -107,29 +113,59 @@ namespace M3D_ISICG
 		//
 		//////////////////////Mettre a jour les variables uniformes////////////////////////////////////////
 
-		glProgramUniformMatrix4fv( Program, location_MVP, 1, GL_FALSE, glm::value_ptr( MVPa ) );
-		glProgramUniformMatrix3fv( Program, location_NormalMatrix, 1, GL_FALSE, glm::value_ptr( Normal_Matrix ) );
-		glProgramUniform3fv(
-			Program, glGetUniformLocation( Program, "lightPos" ), 1, glm::value_ptr( Vec3f( 0.f, 0.f, 0.f ) ) );
+		glProgramUniformMatrix4fv( _geometryPassProgram, location_MVP, 1, GL_FALSE, glm::value_ptr( MVPa ) );
+		glProgramUniformMatrix3fv(
+			_geometryPassProgram, location_NormalMatrix, 1, GL_FALSE, glm::value_ptr( Normal_Matrix ) );
+		glProgramUniform3fv( _geometryPassProgram,
+							 glGetUniformLocation( _geometryPassProgram, "lightPos" ),
+							 1,
+							 glm::value_ptr( Vec3f( 0.f, 0.f, 0.f ) ) );
 		glProgramUniformMatrix4fv(
-			Program, location_ViewMatrix, 1, GL_FALSE, glm::value_ptr( camera.getViewMatrix() ) );
+			_geometryPassProgram, location_ViewMatrix, 1, GL_FALSE, glm::value_ptr( camera.getViewMatrix() ) );
 		glProgramUniformMatrix4fv(
-			Program, location_ModelMatrix, 1, GL_FALSE, glm::value_ptr( bunny._transformation ) );
-		glProgramUniform3fv( Program, locationCameraPos, 1, glm::value_ptr( camera.Positioncamera() ) );
+			_geometryPassProgram, location_ModelMatrix, 1, GL_FALSE, glm::value_ptr( bunny._transformation ) );
+		glProgramUniform3fv( _geometryPassProgram, locationCameraPos, 1, glm::value_ptr( camera.Positioncamera() ) );
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////
-
-		bunny.render( Program );
+		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, FBO );//Le FS va écrire dans les textures attachées au FBO
+		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 ); // remettre le frame buffer par défaut
+		glNamedFramebufferReadBuffer( FBO, GL_COLOR_ATTACHMENT0 );//Sélection le buffer à lire
+		//glBlitNamedFramebuffer( _gBufferTextures[ 0 ], FBO ,);
+		bunny.render( _geometryPassProgram );
 	}
 	void LabWork6::PreparerGBuffuer() {
 		//--------------------------Création de FBO-----------------------------------------
-		glCreateFramebuffers( 1, &_gBufferTextures[ 0 ] );
-		glCreateFramebuffers( 2, &_gBufferTextures[ 1 ] );
-		glCreateFramebuffers( 3, &_gBufferTextures[ 2 ] );
-		glCreateFramebuffers( 4, &_gBufferTextures[ 3 ] );
-		glCreateFramebuffers( 5, &_gBufferTextures[ 4 ] );
-		glCreateFramebuffers( 6, &_gBufferTextures[ 5 ] );
+		glCreateFramebuffers( 1, &FBO );
 		//------------------------------------------------------------------------------------
+		//---------------------Création des textures-----------------------------------------------
+		glCreateTextures( GL_TEXTURE_2D, 1, &_gBufferTextures[0] );
+		glCreateTextures( GL_TEXTURE_2D, 1, &_gBufferTextures[ 1 ] );
+		glCreateTextures( GL_TEXTURE_2D, 1, &_gBufferTextures[ 2 ] );
+		glCreateTextures( GL_TEXTURE_2D, 1, &_gBufferTextures[ 3 ] );
+		glCreateTextures( GL_TEXTURE_2D, 1, &_gBufferTextures[ 4 ] );
+		glCreateTextures( GL_TEXTURE_2D, 1, &_gBufferTextures[ 5 ] );
+		float mipmapLevels = log2( glm::max( _windowWidth, _windowHeight ));
+		glTextureStorage2D( _gBufferTextures[ 0 ], mipmapLevels, GL_RGBA32F, _windowWidth, _windowHeight );
+		glTextureStorage2D( _gBufferTextures[ 1 ], mipmapLevels, GL_RGBA32F, _windowWidth, _windowHeight );
+		glTextureStorage2D( _gBufferTextures[ 2 ], mipmapLevels, GL_RGBA32F, _windowWidth, _windowHeight );
+		glTextureStorage2D( _gBufferTextures[ 3 ], mipmapLevels, GL_RGBA32F, _windowWidth, _windowHeight );
+		glTextureStorage2D( _gBufferTextures[ 4 ], mipmapLevels, GL_DEPTH_COMPONENT32F, _windowWidth, _windowHeight );
+		
+		GLenum drawBuffers[] = {
+			GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2,
+			GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4,
+		}; 
+		for ( size_t i = 0; i < 5; i++ )
+		{
+			glTextureParameteri( _gBufferTextures[ i ], GL_TEXTURE_MIN_FILTER, GL_NEAREST );//Filtres de textures
+			//glTextureParameteri( _gBufferTextures[ i ], GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+			glNamedFramebufferTexture( FBO, drawBuffers[i], _gBufferTextures[ i ], 0 );//liez les textures et le FBO ;
+			
+		}
+		glNamedFramebufferDrawBuffers( FBO, 5, drawBuffers );//associez les textures à la sortie du fragement shader
+		//-----------------------------------------------------------------------------------------
+		
+
 	}
 	void LabWork6::displayUI()
 	{
@@ -145,8 +181,7 @@ namespace M3D_ISICG
 	}
 	void LabWork6::_updateViewMatrix()
 	{
-		glProgramUniformMatrix4fv(
-			Program, location_ViewMatrix, 1, GL_FALSE, glm::value_ptr( camera.getViewMatrix() ) );
+		glProgramUniformMatrix4fv(_geometryPassProgram, location_ViewMatrix, 1, GL_FALSE, glm::value_ptr( camera.getViewMatrix() ) );
 	}
 	void LabWork6::handleEvents( const SDL_Event & p_event )
 	{

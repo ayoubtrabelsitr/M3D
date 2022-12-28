@@ -38,7 +38,7 @@ namespace M3D_ISICG
 		const std::string fragmentShaderStr; // Déclaration de variable pour lire et stocker fragment shader
 		// ================ GL data.
 		GLuint vertexShader, fragmentShader; // Déclaration des shaders
-		GLuint Program;						 // pour stocker l’identifiant de l’objet Program
+		GLuint _geometryPassProgram;		 // pour stocker l’identifiant de l’objet Program
 		GLint  location_MVP;				 // Pour l'adresse de la variable uniforme modelmatrix
 		GLuint location_ViewMatrix, location_ModelMatrix, location_ProjectionMatrix;
 		GLuint location_NormalMatrix;
@@ -46,7 +46,10 @@ namespace M3D_ISICG
 
 		//-----------------Les attributs pour les textures ---------------------------------------------------
 		GLuint _gBufferTextures[5]; //6 attributs 
+		GLuint FBO;
 		void   PreparerGBuffuer();
+		void   initialiser_geometryPassProgram();
+		void   _geometryPass();
 		// ================
 		// Mat4f modelView = glm::mat4( 1.f );
 		Mat4f MVPa;
