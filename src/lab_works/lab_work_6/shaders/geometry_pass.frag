@@ -1,6 +1,10 @@
 #version 450
 
-layout( location = 0 ) out vec4 fragColor;
+layout( location = 0 ) out vec3 fragPosition;
+layout( location = 1 ) out vec3 fragNormal;
+layout( location = 2 ) out vec3 fragAmbient;
+layout( location = 3 ) out vec3 fragDiffuse;
+layout( location = 4 ) out vec3 fragSpecular;
 
 uniform vec3 Camerapos ; 
 
@@ -34,7 +38,7 @@ void main()
 {
 
 vec3 normal=normalize(Normal) ;
-
+fragPosition=FragPos;
 vec3 Var_Diffuse;
 vec3 Var_Spec;
 
@@ -52,7 +56,7 @@ if(uHasNormalMap)
 }
 if(dot(lightDir,normal)<0)
 normal=-normal;
-
+fragNormal=normal;
 if (uHasDiffuseMap)
 	{
 	 Var_Diffuse = vec3(texture(uDiffuseMap, texturecord))*max ( dot(normal , lightDir ), 0.f ) ;  
@@ -60,11 +64,13 @@ if (uHasDiffuseMap)
 else {
 	Var_Diffuse = max ( dot(normal , lightDir ), 0.f ) * diffuse_color;
 	}
+	fragDiffuse=Var_Diffuse;
 vec3 Var_ambient = ambient_color;
 	if (uHasAmbientMap)
 	{
 	Var_ambient = vec3(texture(uAmbientMap, texturecord));   
 	} 
+	fragAmbient=Var_ambient;
 float Shininess =shininess;
 	if (uHasShininessMap)
 	{
@@ -78,8 +84,9 @@ float Shininess =shininess;
 	else {
 	Var_Spec = speculaire_color* pow(max(dot(normal,normalize(lightDir+viewDir)  ), 0.0),shininess);
 	 }
-vec3 result =Var_ambient+ Var_Diffuse+Var_Spec;
-fragColor =vec4( result, 1.f);
+	 fragSpecular=Var_Spec;
+//vec3 result =Var_ambient+ Var_Diffuse+Var_Spec;
+//fragColor =vec4( result, 1.f);
 //fragColor =vec4( result, texture(uDiffuseMap, texturecord).a);// donnez la valeur du canal alpha de la texture diffuse à la couleur finale
 
 }

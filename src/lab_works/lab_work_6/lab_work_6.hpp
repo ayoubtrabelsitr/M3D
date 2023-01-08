@@ -39,21 +39,34 @@ namespace M3D_ISICG
 		// ================ GL data.
 		GLuint vertexShader, fragmentShader; // Déclaration des shaders
 		GLuint _geometryPassProgram;		 // pour stocker l’identifiant de l’objet Program
+		GLuint _shadingPassProgram;
 		GLint  location_MVP;				 // Pour l'adresse de la variable uniforme modelmatrix
 		GLuint location_ViewMatrix, location_ModelMatrix, location_ProjectionMatrix;
 		GLuint location_NormalMatrix;
 		GLuint locationCameraPos;
-
+		GLenum texture_à_afficher = GL_COLOR_ATTACHMENT1;
+		GLuint _Vao;
+		GLuint LightPOS;
 		//-----------------Les attributs pour les textures ---------------------------------------------------
-		GLuint _gBufferTextures[5]; //6 attributs 
+		GLuint _gBufferTextures[6]; //6 attributs 
 		GLuint FBO;
+
 		void   PreparerGBuffuer();
-		void   initialiser_geometryPassProgram();
+		
 		void   _geometryPass();
+		void   _shadingPass();
+
+		void   initialiser_geometryPassProgram();
+		void   initialiser_shadingPassProgram();
+
+		void   CreateCube();
+		
 		// ================
 		// Mat4f modelView = glm::mat4( 1.f );
 		Mat4f MVPa;
-
+		std::vector<int> Indices = { 0, 1, 2, 0, 1, 3 };
+		
+		std::vector<Vec2f> PositionsSommet= { Vec2f( 5.0f, 5.0f ), Vec2f( -5.0f, -5.0f ), Vec2f( 5.0f, -5.0f ), Vec2f( -5.0f, 5.0f )};
 		// ================ Settings.
 		Vec4f _bgColor = Vec4f( 0.8f, 0.8f, 0.8f, 1.f ); // Background color
 
