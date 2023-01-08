@@ -1,7 +1,1 @@
-﻿  lab_work_6.cpp
-C:\Users\ayoub\Desktop\M3D-Ayoub-Trabelsi\m3d_isicg-main\src\lab_works\lab_work_6\lab_work_6.cpp(183,48): warning C4267: 'argument' : conversion de 'size_t' en 'GLuint', perte possible de données
-C:\Users\ayoub\Desktop\M3D-Ayoub-Trabelsi\m3d_isicg-main\src\lab_works\lab_work_6\lab_work_6.cpp(339,68): warning C4267: 'argument' : conversion de 'size_t' en 'GLsizei', perte possible de données
-  M3D_ISICG.vcxproj -> C:\Users\ayoub\Desktop\M3D-Ayoub-Trabelsi\m3d_isicg-main\x64\Debug\M3D_ISICG.exe
-  0 fichier(s) copié(s)
-  0 fichier(s) copié(s)
-  0 fichier(s) copié(s)
+﻿
